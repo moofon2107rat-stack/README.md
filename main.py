@@ -7,7 +7,7 @@ import secrets
 import string
 import time
 
-app = Flask(_name_)
+app = Flask(__name__)
 # แสดง JSON ตามลำดับที่เขียนไว้ใน Dictionary
 app.json.sort_keys = False
 
