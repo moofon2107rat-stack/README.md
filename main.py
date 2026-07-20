@@ -8,6 +8,7 @@ import string
 import time
 
 app = Flask(__name__)
+
 # แสดง JSON ตามลำดับที่เขียนไว้ใน Dictionary
 app.json.sort_keys = False
 
@@ -18,6 +19,7 @@ limiter = Limiter(
     storage_uri="memory://",
     headers_enabled=True
 )
+
 WORK_FACTOR = 2000
 PASSWORD_LENGTH = 10
 SALT_SIZE_BYTES = 16
@@ -25,7 +27,6 @@ SALT_SIZE_BYTES = 16
 
 def generate_random_password(length: int) -> str:
     characters = string.ascii_letters + string.digits
-
     return "".join(
         secrets.choice(characters)
         for _ in range(length)
@@ -50,7 +51,6 @@ def home():
 
 
 @app.route("/login-check")
-# ป้องกันการส่งคำขอจำนวนมากในช่วงเวลาสั้น
 @limiter.limit("5 per second")
 def login_check():
     start_time = time.perf_counter()
@@ -75,25 +75,19 @@ def login_check():
         "username": USERNAME,
         "entered_password": entered_password,
         "password_length": len(entered_password),
-
         "salt_hex": PASSWORD_SALT.hex(),
         "salt_size_bits": len(PASSWORD_SALT) * 8,
         "algorithm": "PBKDF2-HMAC-SHA256",
         "work_factor": WORK_FACTOR,
-
-        "calculated_password_hash":
-            calculated_password_hash.hex(),
-        "stored_password_hash":
-            STORED_PASSWORD_HASH.hex(),
-        "hash_size_bits":
-            len(calculated_password_hash) * 8,
+        "calculated_password_hash": calculated_password_hash.hex(),
+        "stored_password_hash": STORED_PASSWORD_HASH.hex(),
+        "hash_size_bits": len(calculated_password_hash) * 8,
         "password_valid": password_is_valid,
-        "execution_time_seconds":
-            round(execution_time, 4),
+        "execution_time_seconds": round(execution_time, 4),
     })
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=8080,
