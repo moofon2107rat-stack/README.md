@@ -7,20 +7,18 @@ import secrets
 import string
 import time
 
-app = Flask(__name__)
+app = Flask(_name_)
 # แสดง JSON ตามลำดับที่เขียนไว้ใน Dictionary
 app.json.sort_keys = False
-# ==== เพิ่มส่วน Dos Protection ##---------##
-limiter = Limiter(
-    Key_func=get_remote_address,
-    app=app,
-    default_limiter=[],
-    atorage_uri="memory://",
-    headers_enabled=True
-)   
-# ==== สิ้นสุดส่วนที่เพิ่ม ##---------##
 
-WORK_FACTOR = 2000 ##---------##
+limiter = Limiter(
+    key_func=get_remote_address,
+    app=app,
+    default_limits=[],
+    storage_uri="memory://",
+    headers_enabled=True
+)
+WORK_FACTOR = 2000
 PASSWORD_LENGTH = 10
 SALT_SIZE_BYTES = 16
 
@@ -52,13 +50,8 @@ def home():
 
 
 @app.route("/login-check")
-
-# ==== เพิ่มส่วน Dos Protection ##---------##
 # ป้องกันการส่งคำขอจำนวนมากในช่วงเวลาสั้น
 @limiter.limit("5 per second")
-
-# ==== สิ้นสุดส่วนที่เพิ่ม ##---------##
-
 def login_check():
     start_time = time.perf_counter()
 
@@ -100,8 +93,12 @@ def login_check():
     })
 
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     app.run(
+        host="0.0.0.0",
+        port=8080,
+        debug=False
+    )
         host="0.0.0.0",
         port=8080,
         debug=False
