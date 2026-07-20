@@ -54,9 +54,10 @@ def home():
 @app.route("/login-check")
 
 # ==== เพิ่มส่วน Dos Protection ##---------##
-#
+# ป้องกันการส่งคำขอจำนวนมากในช่วงเวลาสั้น
 @limiter.limit("5 per second")
-@limiter.limit("10 per second")
+
+# ==== สิ้นสุดส่วนที่เพิ่ม ##---------##
 
 def login_check():
     start_time = time.perf_counter()
